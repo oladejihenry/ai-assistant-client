@@ -9,7 +9,6 @@ export default function Home() {
 
   const [message, setMessage] = useState("");
   const [body, setBody] = useState([]);
-  const [response, setResponse] = useState("");
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 

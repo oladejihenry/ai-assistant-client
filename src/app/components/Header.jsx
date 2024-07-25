@@ -15,7 +15,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
-
+import { FaGithub } from "react-icons/fa";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -45,13 +45,16 @@ export default function Header() {
           <Link href="/" className="text-sm font-semibold leading-6 text-gray-900">
             Home
           </Link>
+          <Link href="/fitness-coach" className="text-sm font-semibold leading-6 text-gray-900">
+            Fitness Coach
+          </Link>
           <Link href="/about" className="text-sm font-semibold leading-6 text-gray-900">
             About
           </Link>
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-            Log in <span aria-hidden="true">&rarr;</span>
+          <a target="_blank" href="https://github.com/oladejihenry/ai-travel-assistant" className="text-sm font-semibold leading-6 text-gray-900">
+            <FaGithub />
           </a>
         </div>
       </nav>

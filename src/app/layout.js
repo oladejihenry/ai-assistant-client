@@ -6,8 +6,8 @@ import Header from "./components/Header";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "AI-Driven virtual travel assistant",
-  description: "A virtual travel assistant that uses AI to provide personalized travel itineraries, and suggest local attractions.",
+  title: "AI-Driven assistant",
+  description: "An assistant that uses AI to provide personalized information.",
 };
 
 export default function RootLayout({ children }) {

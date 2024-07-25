@@ -3,16 +3,16 @@ import echo from "@/libs/echo";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
-export const useTravel = () => {
+export const useFitness = () => {
     const router = useRouter();
     const [broadcastResponses, setBroadcastResponses] = useState([]);
 
     const csrf = () => axios.get('/sanctum/csrf-cookie');
 
     useEffect(() => {
-        const channel = echo.channel('travel');
+        const channel = echo.channel('fitness-coach');
 
-        channel.listen('TravelResponseUpdated', (e) => {
+        channel.listen('FitnessCoachUpdated', (e) => {
             if (e && typeof e === 'object' && 'response' in e) {
                 setBroadcastResponses(prevResponses => {
                     const lastResponse = prevResponses[prevResponses.length - 1];
@@ -27,16 +27,17 @@ export const useTravel = () => {
         });
 
         return () => {
-            echo.leaveChannel('travel');
+            echo.leaveChannel('fitness-coach');
         };
     }, []);
 
-    const createTravel = async ({ setErrors, ...props }) => {
+
+    const createFitness = async ({ setErrors, ...props }) => {
         try {
             await csrf();
             setErrors([]);
 
-            await axios.get('/api/travel-assistant', {
+            await axios.get('/api/fitness-coach', {
                 params: {
                     message: props.message,
                 }
@@ -48,10 +49,10 @@ export const useTravel = () => {
                 setErrors(error.response.data.errors);
             }
         }
-    };
+    }
 
     return {
-        createTravel,
+        createFitness,
         broadcastResponse: broadcastResponses,
     };
 };
