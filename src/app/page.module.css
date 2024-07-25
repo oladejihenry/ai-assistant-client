@@ -1,0 +1,9 @@
+.error {
+    margin-top: 0.25rem;
+    display: inline-block;
+    font-family: Inter, sans-serif;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    --tw-text-opacity: 1;
+    color: rgb(241 89 92 / var(--tw-text-opacity));
+}
