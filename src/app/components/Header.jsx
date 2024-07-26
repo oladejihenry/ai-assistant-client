@@ -42,7 +42,7 @@ export default function Header() {
           <Link href="/" className="text-sm font-semibold leading-6 text-gray-900">
             Home
           </Link>
-          <Link href="/audio-summarise" className="text-sm font-semibold leading-6 text-gray-900">
+          <Link href="/audio-transcribe" className="text-sm font-semibold leading-6 text-gray-900">
             Audio Transcribe
           </Link>
           <Link href="/fitness-coach" className="text-sm font-semibold leading-6 text-gray-900">
