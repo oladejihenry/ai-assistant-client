@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "AI-Driven assistant",
-  description: "An assistant that uses AI to provide personalized information.",
+  description: "An AI assistant that uses Open AI API to provide personalized information.",
 };
 
 export default function RootLayout({ children }) {
