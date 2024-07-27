@@ -29,16 +29,13 @@ export const useAudio = () => {
     }, []);
 
 
-    const createAudio = async ({ setErrors, formData, setResponse }) => {
+    const createAudio = async ({ setErrors,setResponse, ...props  }) => {
         try {
             await csrf();
             setErrors([]);
-
-            await axios.post('/api/audio-transcribe', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            }).then(response => {
+            
+            await axios.post('/api/audio-transcribe', props)
+            .then(response => {
                 setResponse(response.data.audio);
             });
         } catch (error) {

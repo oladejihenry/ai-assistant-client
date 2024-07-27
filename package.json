@@ -12,9 +12,12 @@
     "@headlessui/react": "^2.1.2",
     "@heroicons/react": "^2.1.5",
     "axios": "^1.7.2",
+    "filepond": "^4.31.1",
+    "filepond-plugin-file-validate-type": "^1.2.9",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
+    "react-filepond": "^7.1.2",
     "react-icons": "^5.2.1"
   },
   "devDependencies": {

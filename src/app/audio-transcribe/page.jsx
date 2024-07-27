@@ -3,12 +3,18 @@
 import { useState } from "react";
 import styles from "../page.module.css";
 import { useAudio } from "@/hooks/useAudio";
+import { FilePond, registerPlugin } from "react-filepond";
+import 'filepond/dist/filepond.min.css';
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
+import axios from "@/libs/axios";
+
+registerPlugin(FilePondPluginFileValidateType);
 
 const AudioSummarisePage = () => {
+    
     const { createAudio, broadcastResponse } = useAudio();
 
-
-    const [audio, setAudio] = useState(null);
+    const [audio, setAudio] = useState([]);
     const [body, setBody] = useState([]);
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,6 +22,39 @@ const AudioSummarisePage = () => {
 
     const handleFileChange = (event) => {
         setAudio(event.target.files[0]);
+    }
+
+    async function handleAudioUpload(fieldName, file, metadata, load, error, progress, abort, transfer, options) {
+        const formData = new FormData();
+        formData.append(fieldName, file, file.name);
+
+        await axios.post('/api/audio-process', formData, {
+
+            onUploadProgress: (progressEvent) => {
+                progress(true, progressEvent.loaded, progressEvent.total);
+            }
+        })
+        .then(response => {
+            // Handle successful upload
+            load(response.data.url);
+
+            return response.data.url
+        })
+        .catch(err => {
+            if (axios.isCancel(err)) {
+                // Upload cancelled
+                console.log('Upload cancelled');
+            } else {
+                error('Upload failed');
+            }
+        });
+
+        return {
+            abort: () => {
+         
+                abort();
+            }
+        };
     }
 
     const submitForm = async event => {
@@ -30,11 +69,10 @@ const AudioSummarisePage = () => {
 
         setIsSubmitting(true);
 
-        const formData = new FormData();
-        formData.append('audio', audio);
+        const audioData = audio[0]?.serverId;
 
         await createAudio({
-            formData,
+            audio: audioData,
             setErrors,
             setResponse
         })
@@ -43,6 +81,8 @@ const AudioSummarisePage = () => {
         setIsSubmitting(false)
 
     }
+
+    
     return (
         <>
             {response && (
@@ -53,16 +93,18 @@ const AudioSummarisePage = () => {
                 </div>
             )}
 
-            {broadcastResponse  && (
+            
                 <div className="mb-8 mt-6 min-h-[20px] text-message flex w-full flex-col items-end gap-2 whitespace-pre-wrap break-words [.text-message+&]:mt-5 overflow-x-auto">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">Audio Transcribe:</h3>
-                <div className="flex w-full flex-col gap-1 empty:hidden first:pt-[3px]">
-                    <div className="markdown prose w-full break-words dark:prose-invert dark">
-                    <p className="rounded-md bg-gray-100 p-4">{broadcastResponse}</p>
+                    <h3 className="text-lg font-medium leading-6 text-gray-900">Audio Transcribe:</h3>
+                    <div className="flex w-full flex-col gap-1 empty:hidden first:pt-[3px]">
+                        {broadcastResponse  && (
+                            <div className="markdown prose w-full break-words dark:prose-invert dark">
+                                <p className="rounded-md bg-gray-100 p-4">{broadcastResponse}</p>
+                            </div>
+                        )}
                     </div>
                 </div>
-                </div>
-            )}
+            
             <form onSubmit={submitForm}>
                 <div className="space-y-12">
                 <div className="border-b border-gray-900/10 pb-12">
@@ -71,14 +113,18 @@ const AudioSummarisePage = () => {
                         Audio Transcribe
                     </label>
                     <div className="mt-2">
-                        <input
-                        type="file"
-                        id="audio"
-                        name="audio"
-                        accept="audio/mp3"
-                        onChange={handleFileChange}
-                        className="px-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        error={errors?.audio}
+                        <FilePond
+                            acceptedFileTypes={["audio/mpeg"]}
+                            files={audio}
+                            onupdatefiles={setAudio}
+                            name="audio"
+                            maxFiles={1}
+                            instantUpload={true}
+                            server={{
+                                process:(fieldName, file, metadata, load, error, progress, abort) => {
+                                    handleAudioUpload(fieldName, file, metadata, load, error, progress, abort);
+                                } 
+                            }}
                         />
                         <span
                             messages={errors.audio}
