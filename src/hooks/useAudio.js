@@ -10,25 +10,21 @@ export const useAudio = () => {
     const csrf = () => axios.get('/sanctum/csrf-cookie');
 
     useEffect(() => {
-        const channel = echo.channel('audio-summarise');
+        const channel = echo.channel('audio-transcribe');
 
-        channel.listen('AudioSummariseEvent', (e) => {
-            // setBroadcastResponses(prevResponse => prevResponse + e.message)
-            // if (e && typeof e === 'object' && 'response' in e) {
-                setBroadcastResponses(prevResponses => {
-                    const lastResponse = prevResponses[prevResponses.length - 1];
-                    if (lastResponse !== e.message) {
-                        return [...prevResponses, e.message];
-                    }
-                    return prevResponses;
-                });
-            // } else {
-            //     console.error('Invalid broadcast response:', e);
-            // }
+        channel.listen('AudioTranscribeEvent', (e) => {
+
+            setBroadcastResponses(prevResponses => {
+                const lastResponse = prevResponses[prevResponses.length - 1];
+                if (lastResponse !== e.message) {
+                    return [...prevResponses, e.message];
+                }
+                return prevResponses;
+            });
         });
 
         return () => {
-            echo.leaveChannel('audio-summarise');
+            echo.leaveChannel('audio-transcribe');
         };
     }, []);
 
@@ -38,14 +34,12 @@ export const useAudio = () => {
             await csrf();
             setErrors([]);
 
-            await axios.post('/api/audio-summarise', formData, {
+            await axios.post('/api/audio-transcribe', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             }).then(response => {
-                // console.log(response.data.audio);
                 setResponse(response.data.audio);
-                // console.log(response);
             });
         } catch (error) {
             if (error.response && error.response.status === 422) {
@@ -56,6 +50,6 @@ export const useAudio = () => {
 
     return {
         createAudio,
-        broadcastResponse: broadcastResponses.join(""),
+        broadcastResponse: broadcastResponses,
     };
 };
